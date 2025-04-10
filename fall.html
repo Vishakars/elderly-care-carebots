@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fall Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🚨 Fall Detection Events</h1>
+
+    <div class="chart-box">
+      {{ chart|safe }}
+    </div>
+
+    <table>
+      <tr>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Status</th>
+      </tr>
+      {% for row in data %}
+      <tr>
+        <td>{{ row['Time'] }}</td>
+        <td>{{ row['Location'] }}</td>
+        <td>{{ row['Status'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

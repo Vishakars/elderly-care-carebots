@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CareBot Companion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+    }
+
+    button.send-btn {
+      padding: 10px 20px;
+      border: none;
+      background-color: #ff6600;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button.send-btn:hover {
+      background-color: #e65c00;
+    }
+
+    #chat-container {
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container chat-window">
+    <h2>🤖 CareBot Chat</h2>
+    <div id="chat-container"></div>
+  
+    <div style="margin-top: 20px;">
+      <input type="text" id="user-input" placeholder="Ask something...">
+      <button class="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+  
+  <script>
+    const chatContainer = document.getElementById('chat-container');
+  
+    function appendMessage(text, sender) {
+      const div = document.createElement('div');
+      div.className = 'chat-message ' + (sender === 'user' ? 'user-msg' : 'bot-msg');
+      div.innerText = text;
+      chatContainer.appendChild(div);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  
+    function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      if (!message) return;
+  
+      appendMessage(message, 'user');
+      input.value = '';
+  
+      const typing = document.createElement('div');
+      typing.className = 'chat-message bot-msg typing-dots';
+      typing.innerText = 'CareBot is typing';
+      chatContainer.appendChild(typing);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+  
+      fetch(`/chatbot-response/${encodeURIComponent(message)}`)
+        .then(res => res.json())
+        .then(data => {
+          chatContainer.removeChild(typing);
+          appendMessage(data.reply, 'bot');
+        });
+    }
+  </script>
+  

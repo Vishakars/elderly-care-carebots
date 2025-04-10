@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Elderly Care Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .dashboard-title {
+      text-align: center;
+      color: #ff6600;
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .logo {
+      width: 40px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .sidebar h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2><img src="{{ url_for('static', filename='logo.png') }}" alt="Elderly Care Logo" class="logo"></h2>
+  <ul>
+    <li><a href="/">🏠 Dashboard</a></li>
+    <li><a href="/health">❤️ Health</a></li>
+    <li><a href="/reminders">⏰ Smart Reminders</a></li>
+    <li><a href="/fall">🚨 Fall Detection</a></li>
+    <li><a href="/emergency">🆘 Emergency</a></li>
+    <li><a href="/diet">🍎 Diet Plan</a></li>
+    <li><a href="/medications">💊 Medications</a></li>
+    <li><a href="/chatbot">🤖 Chatbot</a></li>
+    <li><a href="/caregiver">👨‍⚕️ Caregiver Portal</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <h1 class="dashboard-title">Welcome to the Elderly Care Dashboard</h1>
+
+  <div class="card-grid">
+    <div class="card blue-tile fade-in">
+      <strong>Sensor Status</strong><br>
+      All sensors online ✅
+    </div>
+
+    <div class="card green-tile fade-in">
+      <strong>Health Risk</strong><br>
+      Low risk 🟢
+    </div>
+
+    <div class="card orange-tile fade-in">
+      <a href="/reminders">
+        <strong>Reminders Today</strong><br>
+        3 reminders 📅
+      </a>
+    </div>
+
+    <div class="card red-tile fade-in">
+      <a href="/fall">
+        <strong>Fall Detection</strong><br>
+        Monitoring enabled 🧍‍♂️➡️🛏️
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

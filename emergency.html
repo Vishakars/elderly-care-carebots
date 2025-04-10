@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emergency Alerts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="main-content">
+  <h1>🚨 Emergency Alert Center</h1>
+
+  {% if emergency_on %}
+    <div class="pulse-alert">
+      <strong>⚠ Fall detected!</strong><br>
+      Emergency responders have been notified.
+    </div>
+  {% else %}
+    <div class="safe-alert">
+      ✅ No current emergency alerts.
+    </div>
+  {% endif %}
+
+  <div class="card fade-in" style="margin-top: 30px;">
+    <h3>📞 Emergency Contacts</h3>
+    <ul>
+      <li>👨‍⚕️ Dr. Patel - xxxxxxxxxx</li>
+      <li>👩‍👧 Daughter - xxxxxxxxxx</li>
+      <li>🚑 Emergency Line - 112</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

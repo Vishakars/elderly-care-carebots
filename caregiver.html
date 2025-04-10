@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Caregiver Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fdf6ec;
+      margin: 0;
+      padding: 20px;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      background-color: #d2691e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background-color: #9a4b00;
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .section h2 {
+      color: #d2691e;
+    }
+    .note-box, .chat-box {
+      width: 100%;
+      height: 80px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    .export-btn {
+      background-color: #f4a261;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    body.dark-mode {
+      background-color: #1f1f1f;
+      color: #f0f0f0;
+    }
+    body.dark-mode .section {
+      background-color: #2c2c2c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 style="color: #9a4b00;">👩‍⚕️ Caregiver Dashboard</h1>
+
+    <!-- Tab Buttons -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="openTab(event, 'health')">🔬 Health</button>
+      <button class="tab-btn" onclick="openTab(event, 'reminders')">📅 Reminders</button>
+      <button class="tab-btn" onclick="openTab(event, 'falls')">🚨 Falls</button>
+      <button class="tab-btn" onclick="openTab(event, 'risk')">⚠️ Risk</button>
+      <button class="tab-btn" onclick="openTab(event, 'chat')">💬 Chat</button>
+      <button class="tab-btn" onclick="openTab(event, 'notes')">📝 Notes</button>
+      <button class="tab-btn" onclick="openTab(event, 'report')">📄 Report</button>
+      <button class="tab-btn" onclick="openTab(event, 'settings')">⚙️ Settings</button>
+    </div>
+
+    <!-- Health Monitoring -->
+    <div class="tab-content active" id="health">
+      <div class="section">
+        <h2>🔬 Health Monitoring</h2>
+        <canvas id="healthChart" height="100"></canvas>
+      </div>
+    </div>
+
+    <!-- Reminders -->
+    <div class="tab-content" id="reminders">
+      <div class="section">
+        <h2>🧠 Smart Reminders</h2>
+        <ul>
+          {% for reminder in reminders %}
+          <li>
+            <strong>{{ reminder.task }}</strong> at {{ reminder.time }}
+            {% if reminder.status == 'pending' %}
+            <span style="color: red;">(Pending)</span>
+            {% else %}
+            <span style="color: green;">(Done)</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Fall Detection -->
+    <div class="tab-content" id="falls">
+      <div class="section">
+        <h2>🚨 Fall Detection</h2>
+        <table>
+          <tr><th>Timestamp</th><th>Status</th></tr>
+          {% for entry in fall_data %}
+          <tr>
+            <td>{{ entry.timestamp }}</td>
+            <td style="color: {% if entry.fall_detected %}red{% else %}green{% endif %};">
+              {% if entry.fall_detected %}Fall Detected{% else %}Safe{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <!-- AI Risk Prediction -->
+    <div class="tab-content" id="risk">
+      <div class="section">
+        <h2>⚠️ AI Health Risk Prediction</h2>
+        <canvas id="riskChart" height="100"></canvas>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="tab-content" id="chat">
+      <div class="section">
+        <h2>💬 Messages</h2>
+        <div class="chat-box">[Dummy Chat Box]</div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="tab-content" id="notes">
+      <div class="section">
+        <h2>📝 Caregiver Notes</h2>
+        <textarea id="caregiver-note" class="note-box" placeholder="Add your observations or notes..."></textarea>
+        <br>
+        <button onclick="saveNote()" class="export-btn">💾 Save Note</button>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="tab-content" id="report">
+      <div class="section">
+        <h2>📄 Monthly Reports</h2>
+        <p>You can download reports for offline review:</p>
+        <a href="{{ url_for('download_health_data') }}" class="export-btn">Download Health CSV</a>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="tab-content" id="settings">
+      <div class="section">
+        <h2>⚙️ Settings</h2>
+        <label>
+          <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"> Dark Mode
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openTab(evt, tabId) {
+      const contents = document.querySelectorAll(".tab-content");
+      const buttons = document.querySelectorAll(".tab-btn");
+      contents.forEach(c => c.classList.remove("active"));
+      buttons.forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId)?.classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.getElementById("darkModeToggle").checked;
+      if (isDark) {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    }
+
+    function saveNote() {
+      const note = document.getElementById("caregiver-note").value;
+      fetch("/save_note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note: note })
+      }).then(res => {
+        if (res.ok) alert("Note saved successfully!");
+      });
+    }
+
+    // Load Health Monitoring Line Chart
+const ctx1 = document.getElementById('healthChart').getContext('2d');
+new Chart(ctx1, {
+  type: 'line',
+  data: {
+    labels: {{ timestamps | safe }},
+    datasets: [{
+      label: 'Heart Rate',
+      data: {{ heart_rates | safe }},
+      borderColor: 'orange',
+      fill: false,
+      tension: 0.3
+    }]
+  }
+});
+
+// Load Risk Prediction Chart
+const ctx2 = document.getElementById('riskChart').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: ['Low', 'Medium', 'High'],
+    datasets: [{
+      label: 'Risk Distribution',
+      data: {{ risk_values | safe }},
+      backgroundColor: ['green', 'orange', 'red']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    }
+  }
+});
+
+    window.onload = () => {
+      const darkMode = localStorage.getItem("darkMode");
+      if (darkMode === "on") {
+        document.body.classList.add("dark-mode");
+        document.getElementById("darkModeToggle").checked = true;
+      }
+    };
+  </script>
+</body>
+</html>

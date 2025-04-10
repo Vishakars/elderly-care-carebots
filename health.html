@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Monitoring</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🩺 Health Monitoring</h1>
+    
+    <div class="chart-box">
+      {{ chart|safe }}
+    </div>
+
+    <table>
+      <tr>
+        <th>Timestamp</th>
+        <th>Heart Rate</th>
+        <th>Blood Pressure</th>
+      </tr>
+      {% for row in data %}
+      <tr>
+        <td>{{ row['Timestamp'] }}</td>
+        <td>{{ row['Heart Rate'] }}</td>
+        <td>{{ row['Blood Pressure'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

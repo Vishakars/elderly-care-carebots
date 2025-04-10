@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Reminders</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <section>
+    <h2>🧠 Smart Reminders</h2>
+    <table>
+      <tr>
+        <th>Time</th>
+        <th>Reminder</th>
+        <th>Type</th>
+        <th>Status</th>
+      </tr>
+      {% for row in data %}
+        <tr>
+          <td>{{ row.Time }}</td>
+          <td>{{ row.Reminder }}</td>
+          <td>{{ row.Type }}</td>
+          <td style="color: {{ 'green' if row.Status == 'Done' else 'red' }}">{{ row.Status }}</td>
+          <td>
+            <span class="badge {{ 'done' if row.Status == 'Done' else 'pending' }}">{{ row.Status }}</span>
+          </td>          
+        </tr>
+      {% endfor %}
+    </table>
+  </section>  
+</body>
+</html>
