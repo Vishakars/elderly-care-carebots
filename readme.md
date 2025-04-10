@@ -20,5 +20,13 @@ An AI-powered multi-agent system designed to assist elderly individuals with dai
 - **Pandas** for data analysis
 - **Bootstrap** for responsive UI
 
-## 🗂️ Project Structure
+## 🚀 Getting Started
+
+Clone the repo, install dependencies from `requirements.txt`, and run `app.py` to start the Flask server.
+
+🔗 **Live Demo**  
+[Open in Replit](https://replit.com/@4gm22cs124/Elderly-Care)  
+Click **"Run"** and then open the Webview or visit `/dashboard` to explore the app.
+
+
 
